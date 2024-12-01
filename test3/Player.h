@@ -1,29 +1,26 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <SFML/Graphics.hpp>
-#include <string>
+#include "Laser.h"
 
 class Player {
 private:
-    sf::Sprite sprite;
-    sf::Texture texture;
+    sf::Sprite playerSprite;
+    sf::Texture playerTexture;
+    Laser laser;              // Non-static member
+    bool laserActive;         // Tracks if the laser is active
     float speed;
 
 public:
-    // Constructor
-    Player(const std::string& textureFile, float initSpeed, const sf::Vector2f& startPos);
-
-    // Move the player
+    Player(const std::string& playerTextureFile, const std::string& laserTextureFile, float playerSpeed, float laserSpeed);
     void move(float deltaTime, const sf::Vector2u& windowSize);
-
-    // Draw the player
+    void shoot();
+    void update(float deltaTime);
     void draw(sf::RenderWindow& window);
+    bool isLaserActive() const;          // Check if the laser is active
+    Laser& getLaser();                   // Get reference to the laser
+    void deactivateLaser();              // Deactivate the laser
 
-    // Accessors (optional, for extending functionality)
-    sf::Vector2f getPosition() const;
-    void setPosition(const sf::Vector2f& position);
 };
 
 #endif // PLAYER_H
-

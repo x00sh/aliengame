@@ -1,47 +1,83 @@
 #include "Player.h"
 #include <iostream>
 
-// Constructor
-Player::Player(const std::string& textureFile, float initSpeed, const sf::Vector2f& startPos)
-    : speed(initSpeed) {
-    if (!texture.loadFromFile(textureFile)) {
-        std::cerr << "Error: Could not load texture from " << textureFile << std::endl;
-        exit(-1); // Exit if the texture fails to load
+// Constructor arguments: player texture file, laser texture file, player speed, laser speed as latter two may be changed if difficulty settings are implemented
+Player::Player(const std::string& playerTextureFile, const std::string& laserTextureFile, float playerSpeed, float laserSpeed) 
+    : laser(laserTextureFile, laserSpeed), speed(playerSpeed), laserActive(false) {
+    if (!playerTexture.loadFromFile(playerTextureFile)) {
+        std::cerr << "Error: Could not load player texture from " << playerTextureFile << std::endl;
+        exit(-1);
     }
-    sprite.setTexture(texture);
-    sprite.setScale(0.5f, 0.5f); // Adjust the scale as needed
-    sprite.setPosition(startPos);
+    playerSprite.setTexture(playerTexture);
+    playerSprite.setScale(0.5f, 0.5f);
+	playerSprite.setPosition(800.0f, 820.0f); // Depending on window size, may need to adjust starting position
 }
 
 // Move the player
 void Player::move(float deltaTime, const sf::Vector2u& windowSize) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        sprite.move(-speed * deltaTime, 0); // Move left
+        playerSprite.move(-speed * deltaTime, 0);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        sprite.move(speed * deltaTime, 0); // Move right
+        playerSprite.move(speed * deltaTime, 0);
     }
 
     // Prevent going off-screen
-    if (sprite.getPosition().x < 0) {
-        sprite.setPosition(0, sprite.getPosition().y);
+    if (playerSprite.getPosition().x < 0) {
+        playerSprite.setPosition(0, playerSprite.getPosition().y);
     }
-    if (sprite.getPosition().x + sprite.getGlobalBounds().width > windowSize.x) {
-        sprite.setPosition(windowSize.x - sprite.getGlobalBounds().width, sprite.getPosition().y);
+    if (playerSprite.getPosition().x + playerSprite.getGlobalBounds().width > windowSize.x) {
+        playerSprite.setPosition(windowSize.x - playerSprite.getGlobalBounds().width, playerSprite.getPosition().y);
     }
 }
 
-// Draw the player
+// Shoot a laser
+void Player::shoot() {
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !laserActive) {
+        laserActive = true;
+        // Set the initial position of the laser
+        laser.setPosition(
+            playerSprite.getPosition().x + playerSprite.getGlobalBounds().width / 2 - laser.getBounds().width / 2,
+            playerSprite.getPosition().y - laser.getBounds().height
+        );
+    }
+}
+
+
+// Update the player and laser
+void Player::update(float deltaTime) {
+    if (laserActive) {
+        laser.move(deltaTime);
+
+        // If the laser goes off-screen, deactivate it
+        if (laser.getPosition().y + laser.getBounds().height < 0) {
+            laserActive = false;
+        }
+    }
+}
+
+// Draw the player and laser
 void Player::draw(sf::RenderWindow& window) {
-    window.draw(sprite);
+    window.draw(playerSprite);
+
+    if (laserActive) {
+        laser.draw(window);
+    }
 }
 
-// Accessor: Get player position
-sf::Vector2f Player::getPosition() const {
-    return sprite.getPosition();
+// Check if the laser is active
+bool Player::isLaserActive() const {
+    return laserActive;
 }
 
-// Accessor: Set player position
-void Player::setPosition(const sf::Vector2f& position) {
-    sprite.setPosition(position);
+// Get reference to the laser
+Laser& Player::getLaser() {
+    return laser;
 }
+
+// Deactivate the laser
+void Player::deactivateLaser() {
+    laserActive = false;
+}
+

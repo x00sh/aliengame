@@ -1,20 +1,21 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
-#include "AlienManager.h" // Include the AlienManager class header
+#include "AlienManager.h"
+
 
 int main() {
     // Window dimensions
-    const int windowWidth = 800;
-    const int windowHeight = 600;
+    const int windowWidth = 1600;
+    const int windowHeight = 900;
 
     // Create a window
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Alien Game");
 
     // Initialize the player
-    Player player("assets/player.png", 300.0f, sf::Vector2f(windowWidth / 2 - 25, windowHeight - 100));
+    Player player("assets/player.png", "assets/laser.png", 250.0f, 300.0f);
 
-    // Create the AlienManager with 2 rows and 8 columns of aliens
-    AlienManager alienManager(3, 8, "assets/alien.png", window.getSize(), 0.0f);
+    // Create the AlienManager
+    AlienManager alienManager(5, 11, "assets/alien.png", window.getSize(), 0.0f);
 
     // Main game loop
     sf::Clock clock; // To track frame time for smooth movement
@@ -32,16 +33,17 @@ int main() {
 
         // Update the player
         player.move(deltaTime, window.getSize());
+        player.shoot();                   // Check for shooting
+        player.update(deltaTime);   // Update laser positions
 
         // Update the alien manager (moves aliens and handles direction)
         alienManager.update(deltaTime, window.getSize());
-
+        alienManager.checkCollisions(player);
         // Render the game
         window.clear(sf::Color::Black); // Clear the screen with a black color
         player.draw(window);           // Draw the player
         alienManager.draw(window);     // Draw all aliens using AlienManager
         window.display();              // Display the current frame
     }
-
     return 0;
 }

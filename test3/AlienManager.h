@@ -3,6 +3,8 @@
 
 #include <vector>
 #include "Alien.h"
+#include "Player.h" // Include the Player class header
+#include "Laser.h"
 
 class AlienManager {
 private:
@@ -18,6 +20,9 @@ public:
 
     void update(float deltaTime, const sf::Vector2u& windowSize);
     void draw(sf::RenderWindow& window);
+
+    void checkCollisions(Player& player); // Check and handle collisions with player lasers
+
 };
 
 #endif

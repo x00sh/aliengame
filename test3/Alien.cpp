@@ -9,7 +9,7 @@ Alien::Alien(const std::string& textureFile, const sf::Vector2f& startPos, float
         exit(-1); // Exit if the texture fails to load
     }
     sprite.setTexture(texture);
-    sprite.setScale(0.1f, 0.1f); // Adjust the scale as needed
+    sprite.setScale(0.15f, 0.15); // Adjust the scale as needed
     sprite.setPosition(startPos);
 }
 
