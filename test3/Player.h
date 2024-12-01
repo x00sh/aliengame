@@ -21,6 +21,10 @@ public:
     Laser& getLaser();                   // Get reference to the laser
     void deactivateLaser();              // Deactivate the laser
 
+    // New method to get player's bounding box (for collision detection)
+    sf::FloatRect getBounds() const {
+        return playerSprite.getGlobalBounds();
+    }
 };
 
 #endif // PLAYER_H

@@ -1,16 +1,46 @@
 #include "Alien.h"
 #include <iostream>
 
-// Constructor
 Alien::Alien(const std::string& textureFile, const sf::Vector2f& startPos, float initSpeed)
-    : speed(initSpeed) {
+    : speed(initSpeed), alienLaser(nullptr) { // Initialize alienLaser to nullptr
     if (!texture.loadFromFile(textureFile)) {
         std::cerr << "Error: Could not load texture from " << textureFile << std::endl;
-        exit(-1); // Exit if the texture fails to load
+        exit(-1);
     }
     sprite.setTexture(texture);
-    sprite.setScale(0.15f, 0.15); // Adjust the scale as needed
+    sprite.setScale(0.15f, 0.15f);
     sprite.setPosition(startPos);
+}
+
+Alien::~Alien() {
+    delete alienLaser; // Delete the laser when the alien is destroyed
+}
+
+void Alien::shootLaser() {
+    if (!alienLaser) { // Only shoot if no laser is currently active
+        alienLaser = new Laser("assets/laser.png", -20000.0f); // Initialize laser with speed
+        alienLaser->setPosition(sprite.getPosition().x + sprite.getGlobalBounds().width / 2 - alienLaser->getBounds().width / 2,
+            sprite.getPosition().y + sprite.getGlobalBounds().height);
+    }
+}
+
+
+void Alien::moveLaser(float deltaTime) {
+    if (alienLaser) {
+        alienLaser->move(deltaTime); // Move the laser downward
+    }
+}
+
+
+void Alien::draw(sf::RenderWindow& window) {
+    window.draw(sprite);
+    if (alienLaser) {
+        alienLaser->draw(window); // Draw the laser if it exists
+    }
+}
+
+Laser* Alien::getLaser() {
+    return alienLaser;
 }
 
 // Move the alien in a specific direction
@@ -37,10 +67,6 @@ void Alien::update(float deltaTime, const sf::Vector2u& windowSize, bool& direct
     }
 }
 
-// Draw the alien
-void Alien::draw(sf::RenderWindow& window) {
-    window.draw(sprite);
-}
 
 
 

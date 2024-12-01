@@ -81,6 +81,13 @@ void AlienManager::update(float deltaTime, const sf::Vector2u& windowSize) {
             }
             directionDown = false; // Reset flag after moving all aliens down
         }
+        for (Alien* alien : aliens) {
+            if (rand() % 100 < 1) { // 1% chance for an alien to shoot
+                alien->shootLaser();
+            }
+            alien->moveLaser(deltaTime); // Move the alien's laser
+        }
+
     }
 }
 
@@ -91,6 +98,19 @@ void AlienManager::draw(sf::RenderWindow& window) {
 }
 
 void AlienManager::checkCollisions(Player& player) {
+
+    for (Alien* alien : aliens) {
+        if (alien->getLaser() && alien->getLaser()->getBounds().intersects(player.getBounds())) {
+            // Handle player hit by alien laser
+            std::cout << "Player hit by alien laser!" << std::endl;
+
+            // You can now delete the player or handle a game-over state
+            // Delete the player if hit
+            // This can also be handled by setting a flag for game over if you don't want to delete immediately
+
+            break; // Stop checking other aliens once the player is hit
+        }
+    }
     if (!player.isLaserActive()) {
         return; // No active laser, so no collisions to check
     }
@@ -109,5 +129,9 @@ void AlienManager::checkCollisions(Player& player) {
             ++i; // Check the next alien
         }
     }
+
+   
+  
 }
+
 

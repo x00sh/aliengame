@@ -37,8 +37,9 @@ int main() {
         player.update(deltaTime);   // Update laser positions
 
         // Update the alien manager (moves aliens and handles direction)
-        alienManager.update(deltaTime, window.getSize());
-        alienManager.checkCollisions(player);
+        alienManager.update(deltaTime, window.getSize()); // Update aliens' movement and shooting
+        alienManager.checkCollisions(player); // Check for collisions between lasers and aliens
+
         // Render the game
         window.clear(sf::Color::Black); // Clear the screen with a black color
         player.draw(window);           // Draw the player
