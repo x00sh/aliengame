@@ -1,5 +1,7 @@
 #include "Alien.h"
+#include "Laser.h"
 #include <iostream>
+
 
 Alien::Alien(const std::string& textureFile, const sf::Vector2f& startPos, float initSpeed)
     : speed(initSpeed), alienLaser(nullptr) { // Initialize alienLaser to nullptr
@@ -42,6 +44,16 @@ void Alien::draw(sf::RenderWindow& window) {
 Laser* Alien::getLaser() {
     return alienLaser;
 }
+
+
+
+void Alien::deactivateLaser() {
+    if (alienLaser) {
+        delete alienLaser;
+        alienLaser = nullptr;
+    }
+}
+
 
 // Move the alien in a specific direction
 void Alien::move(float deltaX, float deltaY) {

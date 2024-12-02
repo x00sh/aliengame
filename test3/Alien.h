@@ -21,6 +21,9 @@ public:
 
     void shootLaser(); // Method to shoot laser
     void moveLaser(float deltaTime); // Method to move the laser
+    void deactivateLaser();
+   
+
 
     sf::Vector2f getPosition() const;
     void setPosition(const sf::Vector2f& position);

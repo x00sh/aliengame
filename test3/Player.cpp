@@ -3,7 +3,7 @@
 
 // Constructor arguments: player texture file, laser texture file, player speed, laser speed as latter two may be changed if difficulty settings are implemented
 Player::Player(const std::string& playerTextureFile, const std::string& laserTextureFile, float playerSpeed, float laserSpeed) 
-    : laser(laserTextureFile, laserSpeed), speed(playerSpeed), laserActive(false) {
+    :laser(laserTextureFile, laserSpeed), speed(playerSpeed), laserActive(false), destroyed(false) {
     if (!playerTexture.loadFromFile(playerTextureFile)) {
         std::cerr << "Error: Could not load player texture from " << playerTextureFile << std::endl;
         exit(-1);

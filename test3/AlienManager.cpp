@@ -3,7 +3,8 @@
 #include <algorithm>
 
 AlienManager::AlienManager(int rows, int cols, const std::string& textureFile, const sf::Vector2u& windowSize, float initSpeed)
-    : moveRight(true), directionDown(false), timeSinceLastMove(0.0f), moveDelay(0.25f) {
+    : moveRight(true), directionDown(false), timeSinceLastMove(0.0f), moveDelay(0.25f), playerHitPoint(5) {
+
 
     // Create aliens and place them in a grid
     for (int row = 0; row < rows; ++row) {
@@ -103,6 +104,15 @@ void AlienManager::checkCollisions(Player& player) {
         if (alien->getLaser() && alien->getLaser()->getBounds().intersects(player.getBounds())) {
             // Handle player hit by alien laser
             std::cout << "Player hit by alien laser!" << std::endl;
+          
+            alien->deactivateLaser();
+            playerHitPoint--;
+
+            if (playerHitPoint <= 0) {
+                std::cout << "Game Over!" << std::endl;
+                player.destroy();
+            }
+
 
             // You can now delete the player or handle a game-over state
             // Delete the player if hit

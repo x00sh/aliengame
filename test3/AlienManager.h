@@ -13,6 +13,7 @@ private:
     bool directionDown;
     float timeSinceLastMove;
     const float moveDelay;
+    int playerHitPoint;
 
 public:
     AlienManager(int rows, int cols, const std::string& textureFile, const sf::Vector2u& windowSize, float initSpeed);
