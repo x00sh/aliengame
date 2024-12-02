@@ -2,8 +2,8 @@
 #include <iostream>
 
 // Constructor
-Alien::Alien(const std::string& textureFile, const sf::Vector2f& startPos, float initSpeed)
-    : speed(initSpeed) {
+Alien::Alien(const std::string& textureFile, const sf::Vector2f& startPos)
+    : speed(0.0f) {
     if (!texture.loadFromFile(textureFile)) {
         std::cerr << "Error: Could not load texture from " << textureFile << std::endl;
         exit(-1); // Exit if the texture fails to load

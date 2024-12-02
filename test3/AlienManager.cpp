@@ -2,15 +2,15 @@
 #include <iostream>
 #include <algorithm>
 
-AlienManager::AlienManager(int rows, int cols, const std::string& textureFile, const sf::Vector2u& windowSize, float initSpeed)
-    : moveRight(true), directionDown(false), timeSinceLastMove(0.0f), moveDelay(0.25f) {
+AlienManager::AlienManager(int rows, int cols, const std::string& textureFile, const sf::Vector2u& windowSize, float delay)
+    : moveRight(true), directionDown(false), timeSinceLastMove(0.0f), moveDelay(delay) {
 
     // Create aliens and place them in a grid
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
             float xPos = 50.0f + col * 125.0f;
-            float yPos = 50.0f + row * 125.0f;
-            aliens.push_back(new Alien(textureFile, sf::Vector2f(xPos, yPos), initSpeed));
+            float yPos = 50.0f + row * 175.0f;
+            aliens.push_back(new Alien(textureFile, sf::Vector2f(xPos, yPos)));
         }
     }
 }

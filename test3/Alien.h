@@ -10,7 +10,7 @@ private:
     float speed; // Movement speed
 
 public:
-    Alien(const std::string& textureFile, const sf::Vector2f& startPos, float initSpeed);
+    Alien(const std::string& textureFile, const sf::Vector2f& startPos);
 
     void move(float deltaX, float deltaY);             // Direct movement
     void update(float deltaTime, const sf::Vector2u& windowSize, bool& directionDown); // Automatic movement

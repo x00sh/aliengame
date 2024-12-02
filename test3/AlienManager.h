@@ -15,7 +15,7 @@ private:
     const float moveDelay;
 
 public:
-    AlienManager(int rows, int cols, const std::string& textureFile, const sf::Vector2u& windowSize, float initSpeed);
+    AlienManager(int rows, int cols, const std::string& textureFile, const sf::Vector2u& windowSize, float delay);
     ~AlienManager();
 
     void update(float deltaTime, const sf::Vector2u& windowSize);
