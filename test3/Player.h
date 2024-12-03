@@ -10,10 +10,11 @@ private:
     Laser laser;              // Non-static member
     bool laserActive;         // Tracks if the laser is active
     float speed;
-    bool destroyed;
+    bool destroyed = false;
+    int health = 5;
 
 public:
-    Player(const std::string& playerTextureFile, const std::string& laserTextureFile, float playerSpeed, float laserSpeed);
+    Player(float playerSpeed, float laserSpeed, float xStartPos, float yStartPos);
     void move(float deltaTime, const sf::Vector2u& windowSize);
     void shoot();
     void update(float deltaTime);
@@ -23,13 +24,16 @@ public:
     void deactivateLaser();   
     
 
-    bool isDestroyed() const { return destroyed; }
-    void destroy() { destroyed = true; }  
+    bool getDestroyed() const { return destroyed; }
+    void destroy() { destroyed = true; }
+    void respawn();
+	void reset(float x, float y, float xStartPos, float yStartPos);
 
-    // New method to get player's bounding box (for collision detection)
-    sf::FloatRect getBounds() const {
-        return playerSprite.getGlobalBounds();
-    }
+    int getHealth() const { return health; }
+	void takeDamage() { health--; }
+	
+
+    sf::FloatRect getBounds() const;
 };
 
 #endif // PLAYER_H

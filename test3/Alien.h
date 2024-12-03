@@ -7,12 +7,12 @@
 
 class Alien {
 private:
-    sf::Sprite sprite;
-    sf::Texture texture;
+    sf::Sprite alienSprite;
+    sf::Texture alienTexture;
     float speed; // Movement speed
     Laser* alienLaser; // Alien's laser
 public:
-    Alien(const std::string& textureFile, const sf::Vector2f& startPos, float initSpeed);
+    Alien(const sf::Vector2f& startPos);
     ~Alien(); // Destructor to delete laser if it's created
 
     void move(float deltaX, float deltaY);

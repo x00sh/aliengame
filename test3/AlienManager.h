@@ -12,18 +12,16 @@ private:
     bool moveRight;
     bool directionDown;
     float timeSinceLastMove;
-    const float moveDelay;
-    int playerHitPoint;
+    float moveDelay;
 
 public:
-    AlienManager(int rows, int cols, const std::string& textureFile, const sf::Vector2u& windowSize, float initSpeed);
+    AlienManager(int rows, int cols, const sf::Vector2u& windowSize);
     ~AlienManager();
 
+    void reset(int rows, int cols, const sf::Vector2u& windowSize);
     void update(float deltaTime, const sf::Vector2u& windowSize);
     void draw(sf::RenderWindow& window);
 
     void checkCollisions(Player& player); // Check and handle collisions with player lasers
-
 };
-
 #endif

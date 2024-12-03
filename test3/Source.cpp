@@ -5,17 +5,17 @@
 
 int main() {
     // Window dimensions
-    const int windowWidth = 1600;
-    const int windowHeight = 900;
+    float windowWidth = 1600;
+    float windowHeight = 900;
 
     // Create a window
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Alien Game");
 
     // Initialize the player
-    Player player("assets/player.png", "assets/laser.png", 250.0f, 300.0f);
+    Player player(250.0f, 300.0f, (windowWidth / 2), (windowHeight - 80));
 
     // Create the AlienManager
-    AlienManager alienManager(5, 11, "assets/alien.png", window.getSize(), 0.0f);
+    AlienManager alienManager(4, 9, window.getSize());
 
     // Load font
     sf::Font font;
@@ -34,9 +34,8 @@ int main() {
         windowHeight / 2.0f - gameOverText.getGlobalBounds().height / 2.0f);
 
     bool isGameOver = false;
-    sf::Clock clock; // Clock to restart time on game over
 
-    // Main game loop
+    sf::Clock clock; // Clock to track frame time
     while (window.isOpen()) {
         // Handle events
         sf::Event event;
@@ -45,13 +44,13 @@ int main() {
                 window.close();
             }
 
-            if (event.type == sf::Event::KeyPressed && isGameOver) {
+            if (isGameOver && event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::R) {
-                    // Restart the game
-                    player = Player("assets/player.png", "assets/laser.png", 250.0f, 300.0f); // Re-initialize the player
-                    AlienManager alienManager(5, 11, "assets/alien.png", window.getSize(), 0.0f); // Re-initialize aliens
-                    isGameOver = false; // Set game over state to false
-                    clock.restart(); // Reset the game clock
+                    alienManager.reset(4, 9, window.getSize());
+                    player.reset(250.0f, 300.0f, (windowWidth / 2), (windowHeight - 80));
+                    clock.restart();
+                    isGameOver = false;
+                    std::cout << "Game restarted\n";
                 }
                 else if (event.key.code == sf::Keyboard::Q) {
                     window.close(); // Close the window if Q is pressed
@@ -59,37 +58,34 @@ int main() {
             }
         }
 
-        // Game updates (only if not game over)
+        // Update the game (only if not game over)
         if (!isGameOver) {
-            // Get delta time
             float deltaTime = clock.restart().asSeconds();
 
-            // Update the player
+            // Update the player and alien manager
             player.move(deltaTime, window.getSize());
-            player.shoot();                   // Check for shooting
-            player.update(deltaTime);         // Update laser positions
+            player.shoot();
+            player.update(deltaTime);
+            alienManager.update(deltaTime, window.getSize());
+            alienManager.checkCollisions(player);
 
-            // Update the alien manager (moves aliens and handles direction)
-            alienManager.update(deltaTime, window.getSize()); // Update aliens' movement and shooting
-            alienManager.checkCollisions(player); // Check for collisions between lasers and aliens
-
-            // Check if player is destroyed
-            if (player.isDestroyed()) {
-                isGameOver = true; // Set game over state to true
+            // Check if the player is destroyed
+            if (player.getDestroyed()) {
+                isGameOver = true;
+                std::cout << "Game Over triggered\n";
             }
         }
 
         // Render the game
-        window.clear(sf::Color::Black); // Clear the screen with a black color
+        window.clear(sf::Color::Black);
         if (isGameOver) {
-            window.draw(gameOverText); // Draw the game over text
+            window.draw(gameOverText);          // Draw the game over screen
         }
         else {
-            player.draw(window);           // Draw the player
-            alienManager.draw(window);     // Draw all aliens using AlienManager
+			player.draw(window);				// Draw the player
+			alienManager.draw(window);		  // Draw the aliens
         }
-
-        window.display(); // Display everything we've drawn
+        window.display();
     }
 
     return 0;

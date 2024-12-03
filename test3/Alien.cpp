@@ -2,40 +2,45 @@
 #include "Laser.h"
 #include <iostream>
 
-
-Alien::Alien(const std::string& textureFile, const sf::Vector2f& startPos, float initSpeed)
-    : speed(initSpeed), alienLaser(nullptr) { // Initialize alienLaser to nullptr
-    if (!texture.loadFromFile(textureFile)) {
-        std::cerr << "Error: Could not load texture from " << textureFile << std::endl;
+Alien::Alien(const sf::Vector2f& startPos)
+    : speed(0.0f), alienLaser(nullptr) { // Initialize alienLaser to nullptr
+	const std::string& textureFile = "assets/alien.png";
+    if (!alienTexture.loadFromFile(textureFile)) {
+        std::cerr << "Error: Could not load alienTexture from " << textureFile << std::endl;
         exit(-1);
     }
-    sprite.setTexture(texture);
-    sprite.setScale(0.15f, 0.15f);
-    sprite.setPosition(startPos);
+    alienSprite.setTexture(alienTexture);
+    alienSprite.setScale(0.15f, 0.15f);
+    alienSprite.setPosition(startPos);
 }
 
 Alien::~Alien() {
-    delete alienLaser; // Delete the laser when the alien is destroyed
+    //delete alienLaser; // Delete the laser when the alien is destroyed
 }
+
+
 
 void Alien::shootLaser() {
+
     if (!alienLaser) { // Only shoot if no laser is currently active
-        alienLaser = new Laser("assets/laser.png", -20000.0f); // Initialize laser with speed
-        alienLaser->setPosition(sprite.getPosition().x + sprite.getGlobalBounds().width / 2 - alienLaser->getBounds().width / 2,
-            sprite.getPosition().y + sprite.getGlobalBounds().height);
+        alienLaser = new Laser(-1500.0f); // Initialize laser with speed
+        alienLaser->setPosition(alienSprite.getPosition().x + alienSprite.getGlobalBounds().width / 2 - alienLaser->getBounds().width / 2,
+            alienSprite.getPosition().y + alienSprite.getGlobalBounds().height);
     }
 }
-
 
 void Alien::moveLaser(float deltaTime) {
     if (alienLaser) {
         alienLaser->move(deltaTime); // Move the laser downward
+
+		if (alienLaser->getBounds().height > 900) { // If laser goes off-screen, deactivate it
+			deactivateLaser();
+		}
     }
 }
 
-
 void Alien::draw(sf::RenderWindow& window) {
-    window.draw(sprite);
+    window.draw(alienSprite);
     if (alienLaser) {
         alienLaser->draw(window); // Draw the laser if it exists
     }
@@ -45,8 +50,6 @@ Laser* Alien::getLaser() {
     return alienLaser;
 }
 
-
-
 void Alien::deactivateLaser() {
     if (alienLaser) {
         delete alienLaser;
@@ -54,46 +57,41 @@ void Alien::deactivateLaser() {
     }
 }
 
-
 // Move the alien in a specific direction
 void Alien::move(float deltaX, float deltaY) {
-    sprite.move(deltaX, deltaY);
+    alienSprite.move(deltaX, deltaY);
 }
 
 // Update the alien's movement (e.g., oscillating horizontally)
 void Alien::update(float deltaTime, const sf::Vector2u& windowSize, bool& directionDown) {
-    sf::Vector2f position = sprite.getPosition();
+    sf::Vector2f position = alienSprite.getPosition();
 
     // Reverse direction if alien hits screen bounds
-    if (position.x <= 0 || position.x + sprite.getGlobalBounds().width >= windowSize.x) {
+    if (position.x <= 0 || position.x + alienSprite.getGlobalBounds().width >= windowSize.x) {
         directionDown = true; // Signal to move downward
         speed = -speed;       // Reverse horizontal movement
     }
 
     if (directionDown) {
-        sprite.move(0, 10); // Move downward
+        alienSprite.move(0, 10); // Move downward
         directionDown = false; // Reset direction flag
     }
     else {
-        sprite.move(speed * deltaTime, 0); // Horizontal movement
+        alienSprite.move(speed * deltaTime, 0); // Horizontal movement
     }
 }
 
-
-
-
-
 // Accessor: Get alien's position
 sf::Vector2f Alien::getPosition() const {
-    return sprite.getPosition();
+    return alienSprite.getPosition();
 }
 
 // Accessor: Set alien's position
 void Alien::setPosition(const sf::Vector2f& position) {
-    sprite.setPosition(position);
+    alienSprite.setPosition(position);
 }
 
 // Accessor: Get alien's global bounds (for collision detection)
 sf::FloatRect Alien::getBounds() const {
-    return sprite.getGlobalBounds();
+    return alienSprite.getGlobalBounds();
 }

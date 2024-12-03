@@ -2,15 +2,16 @@
 #include <iostream>
 
 // Constructor arguments: player texture file, laser texture file, player speed, laser speed as latter two may be changed if difficulty settings are implemented
-Player::Player(const std::string& playerTextureFile, const std::string& laserTextureFile, float playerSpeed, float laserSpeed) 
-    :laser(laserTextureFile, laserSpeed), speed(playerSpeed), laserActive(false), destroyed(false) {
-    if (!playerTexture.loadFromFile(playerTextureFile)) {
-        std::cerr << "Error: Could not load player texture from " << playerTextureFile << std::endl;
+Player::Player(float playerSpeed, float laserSpeed, float xStartPos, float yStartPos)
+    :laser(laserSpeed), speed(playerSpeed), laserActive(false), destroyed(false) {
+	const std::string& textureFile = "assets/player.png";
+    if (!playerTexture.loadFromFile(textureFile)) {
+        std::cerr << "Error: Could not load player texture from " << textureFile << std::endl;
         exit(-1);
     }
     playerSprite.setTexture(playerTexture);
     playerSprite.setScale(0.5f, 0.5f);
-	playerSprite.setPosition(800.0f, 820.0f); // Depending on window size, may need to adjust starting position
+	playerSprite.setPosition(xStartPos, yStartPos); // Depending on window size, may need to adjust starting position
 }
 
 // Move the player
@@ -79,5 +80,21 @@ Laser& Player::getLaser() {
 // Deactivate the laser
 void Player::deactivateLaser() {
     laserActive = false;
+}
+
+void Player::respawn() {
+	health = 5;
+    destroyed = false;
+}
+
+void Player::reset(float x, float y, float xStartPos, float yStartPos) {
+	playerSprite.setPosition(xStartPos, yStartPos);
+    health = 5;
+    destroyed = false;
+}
+
+// New method to get player's bounding box (for collision detection)
+sf::FloatRect Player::getBounds() const {
+    return playerSprite.getGlobalBounds();
 }
 

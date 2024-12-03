@@ -5,12 +5,12 @@
 
 class Laser {
 private:
-    sf::Sprite sprite;
-    sf::Texture texture;
+    sf::Sprite laserSprite;
+    sf::Texture laserTexture;
     float speed;
 
 public:
-    Laser(const std::string& textureFile, float initSpeed);
+    Laser(float initSpeed);
     void move(float deltaTime); // Moves the laser upward
     void setPosition(float x, float y); // Sets the initial position of the laser
     void draw(sf::RenderWindow& window);

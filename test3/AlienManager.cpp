@@ -2,16 +2,14 @@
 #include <iostream>
 #include <algorithm>
 
-AlienManager::AlienManager(int rows, int cols, const std::string& textureFile, const sf::Vector2u& windowSize, float initSpeed)
-    : moveRight(true), directionDown(false), timeSinceLastMove(0.0f), moveDelay(0.25f), playerHitPoint(5) {
-
-
+AlienManager::AlienManager(int rows, int cols, const sf::Vector2u& windowSize)
+    : moveRight(true), directionDown(false), timeSinceLastMove(0.0f), moveDelay(0.25f) {
     // Create aliens and place them in a grid
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
-            float xPos = 50.0f + col * 125.0f;
-            float yPos = 50.0f + row * 125.0f;
-            aliens.push_back(new Alien(textureFile, sf::Vector2f(xPos, yPos), initSpeed));
+            float xPos = 50.0f + col * 150.0f;
+            float yPos = 50.0f + row * 100.0f;
+            aliens.push_back(new Alien(sf::Vector2f(xPos, yPos)));
         }
     }
 }
@@ -21,6 +19,22 @@ AlienManager::~AlienManager() {
     for (Alien* alien : aliens) {
         delete alien;
     }
+}
+
+void AlienManager::reset(int rows, int cols, const sf::Vector2u& windowSize) {
+	// Clean up existing aliens
+	for (Alien* alien : aliens) {
+		delete alien;
+	}
+	aliens.clear(); // Clear the vector
+	// Create new aliens
+	for (int row = 0; row < rows; ++row) {
+		for (int col = 0; col < cols; ++col) {
+			float xPos = 50.0f + col * 150.0f;
+			float yPos = 50.0f + row * 100.0f;
+			aliens.push_back(new Alien(sf::Vector2f(xPos, yPos)));
+		}
+	}
 }
 
 void AlienManager::update(float deltaTime, const sf::Vector2u& windowSize) {
@@ -82,15 +96,24 @@ void AlienManager::update(float deltaTime, const sf::Vector2u& windowSize) {
             }
             directionDown = false; // Reset flag after moving all aliens down
         }
-        for (Alien* alien : aliens) {
-            if (rand() % 100 < 1) { // 1% chance for an alien to shoot
-                alien->shootLaser();
-            }
-            alien->moveLaser(deltaTime); // Move the alien's laser
-        }
 
+        // Update lasers and shooting for all aliens
+        
+        for (Alien* alien : aliens) {
+            if (!alien->getLaser()) {
+                // Alien has no active laser, give it a 1% chance to shoot
+                if (rand() % 100 < 1) { // 1% chance
+                    alien->shootLaser();
+                }
+            }
+
+            // Move the alien's laser if it is active
+            alien->moveLaser(deltaTime);
+        }
+        
     }
 }
+
 
 void AlienManager::draw(sf::RenderWindow& window) {
     for (Alien* alien : aliens) {
@@ -106,17 +129,12 @@ void AlienManager::checkCollisions(Player& player) {
             std::cout << "Player hit by alien laser!" << std::endl;
           
             alien->deactivateLaser();
-            playerHitPoint--;
+			player.takeDamage();
 
-            if (playerHitPoint <= 0) {
+            if (player.getHealth() <= 0) {
                 std::cout << "Game Over!" << std::endl;
                 player.destroy();
             }
-
-
-            // You can now delete the player or handle a game-over state
-            // Delete the player if hit
-            // This can also be handled by setting a flag for game over if you don't want to delete immediately
 
             break; // Stop checking other aliens once the player is hit
         }
@@ -135,13 +153,14 @@ void AlienManager::checkCollisions(Player& player) {
             player.deactivateLaser();         // Deactivate the laser
             break;                            // Only one collision per laser
         }
+        else if (aliens[i]->getLaser() && laser.getBounds().intersects(aliens[i]->getLaser()->getBounds())) {
+			// Collision detected: Remove alien laser and deactivate the player's laser
+			aliens[i]->deactivateLaser();     // Deactivate the alien's laser
+			player.deactivateLaser();         // Deactivate the player's laser
+			break;
+        }
         else {
             ++i; // Check the next alien
         }
     }
-
-   
-  
 }
-
-
