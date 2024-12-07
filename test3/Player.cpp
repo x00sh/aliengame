@@ -82,15 +82,10 @@ void Player::deactivateLaser() {
     laserActive = false;
 }
 
-void Player::respawn() {
-	health = 5;
-    destroyed = false;
-}
-
 void Player::reset(float x, float y, float xStartPos, float yStartPos) {
-	playerSprite.setPosition(xStartPos, yStartPos);
     health = 5;
     destroyed = false;
+    playerSprite.setPosition(xStartPos, yStartPos);
 }
 
 // New method to get player's bounding box (for collision detection)

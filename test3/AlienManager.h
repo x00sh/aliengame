@@ -15,10 +15,10 @@ private:
     float moveDelay;
 
 public:
-    AlienManager(int rows, int cols, const sf::Vector2u& windowSize);
+    AlienManager(int rows, int cols, const sf::Vector2u& windowSize, float delay, float laserSpeed);
     ~AlienManager();
 
-    void reset(int rows, int cols, const sf::Vector2u& windowSize);
+    void reset(int rows, int cols, const sf::Vector2u& windowSize, float laserSpeed);
     void update(float deltaTime, const sf::Vector2u& windowSize);
     void draw(sf::RenderWindow& window);
 

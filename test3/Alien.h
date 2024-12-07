@@ -10,9 +10,10 @@ private:
     sf::Sprite alienSprite;
     sf::Texture alienTexture;
     float speed; // Movement speed
+	float laserSpeed; // Laser speed
     Laser* alienLaser; // Alien's laser
 public:
-    Alien(const sf::Vector2f& startPos);
+    Alien(const sf::Vector2f& startPos, float laser);
     ~Alien(); // Destructor to delete laser if it's created
 
     void move(float deltaX, float deltaY);

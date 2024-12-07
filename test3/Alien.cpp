@@ -2,8 +2,8 @@
 #include "Laser.h"
 #include <iostream>
 
-Alien::Alien(const sf::Vector2f& startPos)
-    : speed(0.0f), alienLaser(nullptr) { // Initialize alienLaser to nullptr
+Alien::Alien(const sf::Vector2f& startPos, float laser)
+    : speed(0.0f), laserSpeed(laser), alienLaser(nullptr) { // Initialize alienLaser to nullptr
 	const std::string& textureFile = "assets/alien.png";
     if (!alienTexture.loadFromFile(textureFile)) {
         std::cerr << "Error: Could not load alienTexture from " << textureFile << std::endl;
@@ -23,7 +23,7 @@ Alien::~Alien() {
 void Alien::shootLaser() {
 
     if (!alienLaser) { // Only shoot if no laser is currently active
-        alienLaser = new Laser(-1500.0f); // Initialize laser with speed
+        alienLaser = new Laser(-laserSpeed); // Initialize laser with speed
         alienLaser->setPosition(alienSprite.getPosition().x + alienSprite.getGlobalBounds().width / 2 - alienLaser->getBounds().width / 2,
             alienSprite.getPosition().y + alienSprite.getGlobalBounds().height);
     }

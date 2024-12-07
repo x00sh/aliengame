@@ -2,14 +2,14 @@
 #include <iostream>
 #include <algorithm>
 
-AlienManager::AlienManager(int rows, int cols, const sf::Vector2u& windowSize)
-    : moveRight(true), directionDown(false), timeSinceLastMove(0.0f), moveDelay(0.25f) {
+AlienManager::AlienManager(int rows, int cols, const sf::Vector2u& windowSize, float delay, float laserSpeed)
+    : moveRight(true), directionDown(false), timeSinceLastMove(0.0f), moveDelay(delay) {
     // Create aliens and place them in a grid
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
             float xPos = 50.0f + col * 150.0f;
             float yPos = 50.0f + row * 100.0f;
-            aliens.push_back(new Alien(sf::Vector2f(xPos, yPos)));
+            aliens.push_back(new Alien(sf::Vector2f(xPos, yPos), laserSpeed));
         }
     }
 }
@@ -21,7 +21,7 @@ AlienManager::~AlienManager() {
     }
 }
 
-void AlienManager::reset(int rows, int cols, const sf::Vector2u& windowSize) {
+void AlienManager::reset(int rows, int cols, const sf::Vector2u& windowSize, float laserSpeed) {
 	// Clean up existing aliens
 	for (Alien* alien : aliens) {
 		delete alien;
@@ -32,7 +32,7 @@ void AlienManager::reset(int rows, int cols, const sf::Vector2u& windowSize) {
 		for (int col = 0; col < cols; ++col) {
 			float xPos = 50.0f + col * 150.0f;
 			float yPos = 50.0f + row * 100.0f;
-			aliens.push_back(new Alien(sf::Vector2f(xPos, yPos)));
+			aliens.push_back(new Alien(sf::Vector2f(xPos, yPos), laserSpeed));
 		}
 	}
 }

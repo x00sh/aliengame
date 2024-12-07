@@ -26,7 +26,6 @@ public:
 
     bool getDestroyed() const { return destroyed; }
     void destroy() { destroyed = true; }
-    void respawn();
 	void reset(float x, float y, float xStartPos, float yStartPos);
 
     int getHealth() const { return health; }
